@@ -37,6 +37,8 @@
     - sudo nginx -s reload            不重启下重载配置文件，一般修改配置文件后执行改命令
     - sudo find / -name nginx.conf    查看当前使用的配置文件
 
+- 安装完成后：访问 http://localhost  显示Welcome to nginx!
+
 - nginx文件说明：
     - 程序文件在 /usr/sbin/nginx
     - 日志文件 /var/log/nginx
