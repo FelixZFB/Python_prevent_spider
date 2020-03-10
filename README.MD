@@ -46,3 +46,23 @@
     - 存放静态文件 /usr/share/nginx 
 
 - [Ubuntu 16.04安装Nginx以及相关配置](https://blog.csdn.net/javahighness/article/details/80500437?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task)
+
+
+# 2 常见反爬虫措施
+## 2.1 User-Agent反爬虫
+- User-Agent是用户身份识别的重要信息，User-Agent中包含用户浏览器、浏览器引擎、操作系统等信息
+- python的requests库请求时候，服务器读取到的User-Agent信息就是 python-requests/2.21.0
+- User-Agent反爬虫：
+    - nginx中加入User-Agent检测，将python，Java，PHP等一些关键词都加入到黑名单中
+    - 检测时候，发现含有这些关键词，就认定为是爬虫程序
+- 除了User-Agent头部信息，常用的还有Host,Referer头部信息
+    - 1. Host 描述请求将被发送的目的地，只含域名和端口号；
+    - 2. Origin 请求是从哪里发起的，包括域名和端口号，这个参数一般存在于CORS跨域请求中，
+        可以看到response有对应的header: Access-Control-Allow-Origin
+    - 3. Referer 告知服务器请求的原始资源的URI,其用于所有类型的请求，包括：协议+域名+查询参数
+
+
+## 2.2 Cookies反爬虫
+- 服务器端，一般是Nginx中加入检测请求头信息中是否有http_cookie信息,然后返回不同的结果。
+- 浏览器正常请求网页，服务器返回的cookie会自动保存在本地，下次访问时候会自动携带
+- 没有携带cookie访问，返回结果都是重定向，一般都是重定向30x,一般都是定位到首页或者登陆页面
