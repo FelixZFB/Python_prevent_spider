@@ -27,11 +27,12 @@ def hex5(value):
     return manipulator.hexdigest()
 
 def uri():
-    # 生成1-9随机的5个数
+    # 生成1-9随机的5个数，join函数将字符串进行拼接
     action = "".join([str(randint(1, 9)) for _ in range(5)])
     # 生成当前的时间戳
     tim = round(time())
-    # 生成5个随机的大写字母
+    # 生成5个随机的大写字母,65-91生成的大写A-Z的ASCII码，chr表示将ASCII码转变成字母
+    # sample随机选取5个值出来，结果是列表，然后进行拼接
     rand_str = "".join(sample([chr(_) for _ in range(65, 91)], 5))
     # 上面三个参数拼接后进行MD5加密
     value = action + str(tim) + rand_str
