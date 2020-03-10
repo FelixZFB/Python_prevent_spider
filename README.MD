@@ -48,7 +48,7 @@
 - [Ubuntu 16.04安装Nginx以及相关配置](https://blog.csdn.net/javahighness/article/details/80500437?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task)
 
 
-# 2 常见反爬虫措施
+# 2 信息验证型反爬虫
 ## 2.1 User-Agent反爬虫
 - User-Agent是用户身份识别的重要信息，User-Agent中包含用户浏览器、浏览器引擎、操作系统等信息
 - python的requests库请求时候，服务器读取到的User-Agent信息就是 python-requests/2.21.0
@@ -66,3 +66,18 @@
 - 服务器端，一般是Nginx中加入检测请求头信息中是否有http_cookie信息,然后返回不同的结果。
 - 浏览器正常请求网页，服务器返回的cookie会自动保存在本地，下次访问时候会自动携带
 - 没有携带cookie访问，返回结果都是重定向，一般都是重定向30x,一般都是定位到首页或者登陆页面
+
+## 2.3 签名验证反爬虫
+- 访问一下网址，然后点击查看详情
+    - http://www.porters.vip/verify/sign/
+    - 上述网址，点击查看详情，查看network
+    - 下面网址就是动态加密生成的，直接复制去请求是无效的，网址有多个参数还有时间戳，直接浏览器再次去请求就是无效的
+    - http://www.porters.vip/verify/sign/fet?actions=31288&tim=1583827827&randstr=JUBMB&sign=1f46e27e48caacc155fbf9afde6bbbc0
+    - 动态加密请求，就是需要破解动态网址是如何生成的
+
+- 查看网址，点击查看详情位置，参考图片005，发现onclick绑定一个fetch()函数
+    - 表明点击后执行该函数，函数都是放在js代码里面，head里面发现引入了两个自定义的js文件
+    - Chrome检查，查看，右键在js文件上，open in new tab
+    - 查看fetch()函数具体内容，函数访问一个动态生成的网址，网页内容插入替换原始网页id="content"标签的内容
+    - 然后我们在python中实现该真实网址的生成方式
+    
