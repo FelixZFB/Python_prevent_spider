@@ -98,8 +98,8 @@
     - 参考006案例
     
     
-- js动态请求补充：
-    - 网页源码中（Name，Status，Type，Initiator，Size，Time，Waterfall）的含义
+## 2.4 js动态请求补充：
+- 网页源码中（Name，Status，Type，Initiator，Size，Time，Waterfall）的含义
     - 第一列 Name ：请求的名称，一般会将URL 最后一部分内容当作名称
     - 第二列 Status ：响应的状态码，显示为 200 代表响应是正常的 通过状态码，我们可以判断发送了请求之后是否得到了正常的响应 。
     - 第三列 Type： 请求的文档类型 。这里为 document ，代表我们这次请求的是 HTML 文档， 内容就是一些 HTML 代码。
@@ -121,3 +121,23 @@
     - 2、在浏览器地址栏中打开即可看到对应的内容。
     - 3、一般情况为json格式，
     - 4、再利用python等语言抓取json中的需要的内容即可
+    
+
+# 3 动态渲染反爬虫  
+## 3.1 Selenium工具
+- 工具1：Selenium + Chrome + 驱动器 三件套抓取动态渲染网页
+    - 缺点：执行效率低，占用系统资源大，不能异步请求
+
+## 3.2 Puppeteer工具
+- 工具2：Puppeteer(python中的库叫pyppeteer)
+- 安装：
+    - 安装命令：
+        pip install pyppeteer
+        python -m pip install pyppeteer
+    - 从GIT安装最新版本：python -m pip install -U git+https://github.com/miyakogi/pyppeteer.git@dev
+    
+    - 推荐安装方式：
+        - 第一步：需要先安装支持库 pip install tdqm
+        - 第二步：pip install pyppeteer
+        - 第三步：含有pyppeteer的代码运行时候，会自动下载chromium解压安装（Chrome的实验版）
+        
