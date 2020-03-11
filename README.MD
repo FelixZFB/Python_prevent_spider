@@ -140,4 +140,14 @@
         - 第一步：需要先安装支持库 pip install tdqm
         - 第二步：pip install pyppeteer
         - 第三步：含有pyppeteer的代码运行时候，会自动下载chromium解压安装（Chrome的实验版）
-        
+- 参考案例008
+
+## 3.3 Splash异步渲染服务
+- Splash是一个异步的JavaScript的渲染服务，它带有HTTP API的轻量级Web服务器。
+- 可视化界面地址：http://www.porters.vip:8050/      
+- 上面地址输入网址，然后render me就可以获取网页的截图、资源加载数据、HTML原始文本
+- 脚本里面也可以自己编写，但是使用的是Lua语言
+- 参考009图片
+
+- Splash服务也可以和Python语言结合使用
+- 参考案例009
