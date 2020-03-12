@@ -24,7 +24,7 @@ print(res.status_code)
 # 如果请求的状态码为200，则继续
 if res.status_code == 200:
     html = Selector(res.text)
-    # 结果是一个SelectorList对象
+    # 结果是一个SelectorList对象,提取该标签下所有的文本内容
     title = html.xpath('//li[@class="list-group-item"]/text()')
     print(title)
     # extract()提取所有Selector对象的内容，返回一个内容列表

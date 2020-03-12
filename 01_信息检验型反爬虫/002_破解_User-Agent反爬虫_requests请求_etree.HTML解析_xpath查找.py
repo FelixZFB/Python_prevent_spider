@@ -25,6 +25,7 @@ print(res.status_code)
 if res.status_code == 200:
     html = etree.HTML(res.text, etree.HTMLParser())
     # 普通xpath解析得到的结果就是所有内容的一个列表，对比003中的Selector解析结果
+    # 提取标签下所有的文本内容
     title = html.xpath('//li[@class="list-group-item"]/text()')
     print(title)
 else:
