@@ -302,7 +302,6 @@
       
       
 # 5 特征识别爬虫
-## 5.1   
 - HTML文档对象 DOM
     - HTML文档对象DOM(Document Object Model)  
     - HTML DOM对象是对HTML文档所有元素进行访问的入口，这个入口就是文档对象模型，简称DOM
@@ -321,3 +320,21 @@
         - window.screen: 访问者浏览器的屏幕信息
 
 - 详细DOM和BOM对象属性和方法查看图书P66-P69
+
+## 5.1 Webdriver识别反爬虫
+- webdriver特征是可以修改的，不可靠
+- 参考案例006
+
+## 5.2 浏览器特征
+- navigator.userAgent  浏览器器属性
+- navigator.platform   用户计算机信息
+- 参考截图007_浏览器特征
+- 上面的浏览器特征也是和navigator.webdriver一样可以认为进行修改的，一样不可靠
+
+## 5.3 爬虫特征
+- IP地址访问频率限制：使用IP池，分布式爬虫(多台机器轮流访问)
+- 用户凭证（cookie或者token）和浏览器指纹限制：
+    - web框架自带访问频率限制：登陆用户每天访问1000次，未登录每天100次
+    - web框架自带限速模块Throttling
+
+- 用户凭证反爬虫：申请大量用户，访问时候随机携带cookie或token值，类似IP代理池
