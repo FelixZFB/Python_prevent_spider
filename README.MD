@@ -348,3 +348,61 @@
 - 正常页面该盒子已被隐藏，用户浏览器访问不到，但是爬虫循环访问时候可以访问到
 - 后端设置访问该链接就被视为爬虫，然后将IP加入黑名单，实现了反爬
 - 隐藏式连接，利用的是爬虫工程师的粗细大意，仔细检查就可以避免访问隐藏式连接
+
+
+# 6 App 反爬虫
+## 6.1 App抓包
+- 抓包是利用第三方作为代理，实现监听网络传输与收发数据的行为
+### 6.1.1 HTTP 抓包
+- 抓包软件Charles、Fiddler、Wireshark
+- 注意抓包软件和要抓包的电脑或者手机要处于同一个网络
+
+## 6.2 APK反编译
+
+
+## 6.3 代码混淆
+
+
+# 7 验证码
+## 7.1 字符验证码
+- 思路：
+    - selenium等渲染工具保存验证码截图
+    - pytesseract等OCR识别工具识别
+- PyTesseract识别工具
+    - 缺点：pytesseract识别率较低，识别不出来就没有任何结果
+    - 即使进行二值化和灰度处理，很多还是无法识别
+    - 使用腾讯云的ocr识别，还是有些无法识别
+- 复杂验证码识别：
+    - 使用卷积神经网络预测验证码：常用框架TensorFlow、PyTorch、Caffe
+    - 先学习大量验证码图片，然后最终识别率可以达到99%以上
+
+
+## 7.2 计算型验证码
+- 思路
+    - selenium或者其它自动化渲染工具对指定元素进行截图
+    - pytesseract识别图片为字符串
+    - re正则查找数字和计算符号，然后计算结果
+    - 然后向输入框输入结果最后点击登录
+- 参考案例002
+
+- selenium下对指定元素进行截图
+```python
+from selenium import webdriver
+driver = webdriver.Chrome()
+driver.maximize_window() # 最大化窗口
+driver.get("https://www.autohome.com.cn")
+ 
+driver.save_screenshot('capture.png')    #全屏截图
+
+ele = driver.find_element_by_id('s4612')
+ele.screenshot('ele.png')    #元素截图
+```
+
+## 7.3 滑动验证码
+- 思路
+    - selenium打开浏览器
+    - 定位滑块和滑轨元素
+    - 获取元素css属性的width值，计算滑动距离
+    - 使用ActionChains模块滑动滑块到目标位置
+    - 验证完成
+- 参考案例003
