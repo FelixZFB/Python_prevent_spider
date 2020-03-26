@@ -479,4 +479,46 @@ ele.screenshot('ele.png')    #元素截图
 - 对称加密速度更快，大量数据加密一般都使用对称加密。
 - AES（Advanced encryption standard）高级加密标准，最常用的对称加密算法。
     - AES加密过程中的操作都是可逆的
-    - 
+    - 关键是要知道密钥，加密和解密过程都需要使用密钥
+    
+    
+- Python中的AES库pycrypto
+    - 安装库：pip install pycrypto 
+    - 直接安装报错，下载whl文件到本地后安装
+- AES加密需要传入三个参数：密钥，加密模式，IV(初始化向量)
+    - 密钥：
+        - AES key must be either 16, 24, or 32 bytes long
+        - AES密钥就是数字和字母的一个字符串，可以自己定义，长度是固定的16 24 32位
+    - 加密模式：
+        - ECB：Electronic Code Book（电子码本模式） 
+        - CBC：Cipher Block Chaining（密码块链模式） 
+        - CTR：Counter（计数器模式）
+    - 初始化向量
+        - 初始化向量（英语：initialization vector，缩写为IV），或译初向量，
+        - 又称初始变量（starting variable，缩写为SV），是一个固定长度的输入值。
+        - 一般的使用上会要求它是随机数或拟随机数（pseudorandom）。
+        - 使用随机数产生的初始化向量才能达到语义安全（散列函数与消息验证码也有相同要求），
+        - 并让攻击者难以对同一把密钥的密文进行破解。
+        - 在区块加密中，使用了初始化向量的加密模式被称为区块加密模式。
+        
+### 8.1.5 非对称加密和RSA
+- 加密和解密过程使用的密钥是不相同的，所以叫非对称加密
+    - 加密和解密分别使用公钥和私钥
+    - python中还是使用pycrypto进行RSA加密解密
+    - 注意：006案例会报错ImportError: No module named 'winrandom'
+    - 解决方法：
+        - 修改python安装目录下的 lib/Crypto/Random/OSRNG/nt.py 文件中以下代码：
+        - import winrandom
+        - 修改为：
+        - from Crypto.Random.OSRNG import winrandom
+        
+## 8.2 JavaScript代码混淆
+- 目的：代码混淆后，降低代码易读性，混淆后的代码无法都是一些不可读的代码或者符号
+    - 防止有心人调试网页代码，混淆后增加理解和调试的难度
+    - 混淆后的代码在浏览器的console调试窗口运行，因为本质还是JavaScript代码
+- 常用混淆方法：正则替换、代码编码、代码复杂化
+- 混淆过程不是加密，混淆代码可以还原，只是不同混淆手段还原需要的时间不同
+- 混淆原理：
+    - 抽象语法树，JS编译器的目的是把JS代码编译为机器码，
+    - 混淆器修改的就是编译过程中的语法树
+    - 经过混淆器修改后本质还是JS代码，只是我们可读的代码失去了可读性
