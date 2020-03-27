@@ -314,10 +314,11 @@
 - 浏览器器对象 BOM
     - 浏览器对象模型BOM(Browser Object Model)
     - BOM对象是用来获取和操作浏览器的属性，主要对象有
-        - window: 浏览器窗口，所有的JavaScript全局对象、函数和变量均自动成为该对象的成员
+        - window: 浏览器窗口对象，所有的JavaScript全局对象、函数和变量均自动成为该对象的成员
         - window.navigator：访问者浏览器的相关信息
         - window.location: 窗口当前显示的文档的web地址
         - window.screen: 访问者浏览器的屏幕信息
+        - window.onload：HTML文档整体加载后，再执行window.onload里面的代码
 
 - 详细DOM和BOM对象属性和方法查看图书P66-P69
 
@@ -522,3 +523,18 @@ ele.screenshot('ele.png')    #元素截图
     - 抽象语法树，JS编译器的目的是把JS代码编译为机器码，
     - 混淆器修改的就是编译过程中的语法树
     - 经过混淆器修改后本质还是JS代码，只是我们可读的代码失去了可读性
+
+## 8.3 鼠标禁止事件
+- HTML DOM对象允许JavaScript在HTML文档中注册不同的事件，当事件触发时就会触发对应的JavaScript代码
+- 鼠标事件：
+    - onclick       鼠标点击
+    - oncontextmenu 鼠标右键菜单
+    - onmousedown   鼠标按下
+    - onmousemove   鼠标移动
+    - oncopy        复制内容
+    - 使用都是document.onclick
+- 键盘事件：
+    - onkeydown     键盘按下
+- 具体使用参考008/009/010案例
+- 参考011-013图片
+
