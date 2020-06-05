@@ -23,7 +23,7 @@ async def main():
     await page.goto(url)
     # 点击指定按钮
     await page.click('#fetch_button') # 使用css选择器语法进行定位
-    # 读取页面指定位置的文本
+    # 使用xpath选择器，读取页面指定位置的文本
     res = await page.xpath('//*[@id="content"]')
     text = await (await res[0].getProperty('textContent')).jsonValue()
     print(text)
