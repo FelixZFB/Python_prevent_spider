@@ -16,7 +16,6 @@ from pyppeteer import launch
 proxy = '127.0.0.1:7891'
 
 
-
 async def main():
     # 使用args参数传入，传入的是一个列表
     browser = await launch({'args': ['--proxy-server=socks5://' + proxy], 'headless': False})
