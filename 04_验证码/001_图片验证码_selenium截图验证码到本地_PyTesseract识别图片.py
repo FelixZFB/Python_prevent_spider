@@ -43,6 +43,7 @@ def save_image():
     # driver.find_element_by_id('wordsCanvas')  # 使用id进行定位
     mathes = driver.find_element_by_css_selector('#wordsCanvas')  # 使用css选择器定位
     # 截图元素(验证码部分)保存到本地
+    # 定位到元素后，可以直接使用screenshot方法和save_screenshot方法一样
     mathes.screenshot('words.png')
     # 关闭浏览器
     # driver.close()

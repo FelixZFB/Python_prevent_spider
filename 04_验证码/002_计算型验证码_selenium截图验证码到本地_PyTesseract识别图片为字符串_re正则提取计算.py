@@ -38,17 +38,18 @@ def save_image():
 
 # 打开保存的验证码图片，然后识别为文字
 def image_to_string():
-    # 保存在本地的验证码图片路径
+    # 保存在本地的验证码图片路径，使用path进行转换
     image = path.join(path.dirname(path.abspath(__file__)), 'mathes.png')
     # 使用pytesseract库识别图中文字
     strings = pytesseract.image_to_string(image)
     print(strings)
-    # 提取数字
+    # 提取所有的数字
     string = re.findall('\d+', strings)
     # 提取计算符号
     operator = re.findall('[+|\-|\*]', strings)
     print(string, operator)
 
+    # 根据计算符号，转换为int类型后进行计算
     if operator[0] == '+':
         return int(string[0]) + int(string[1])
     if operator[0] == '-':
