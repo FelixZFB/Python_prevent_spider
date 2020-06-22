@@ -45,7 +45,7 @@ def save_image():
     # 截图元素(验证码部分)保存到本地
     mathes.screenshot('words.png')
     # 关闭浏览器
-    driver.close()
+    # driver.close()
 
 # 图片进行二值化处理
 def handler(grays, threshold=160):
