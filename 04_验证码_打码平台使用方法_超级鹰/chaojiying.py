@@ -19,7 +19,7 @@ class Chaojiying(object):
     # 构造函数（初始化方法）接收三个参数，分别是超级鹰的用户名、密码以及软件 ID
     def __init__(self, username, password, soft_id):
         self.uername = username
-        self.password = md5(password.encode())
+        self.password = md5(password.encode('utf-8'))
         self.soft_id = soft_id # 软件id在用户中心，左侧菜单栏底部，自己生成一个ID号(填入软件名及说明，生成一个ID)
         # 打码平台的用户名，密码，软件ID
         self.base_params = {

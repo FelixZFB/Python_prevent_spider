@@ -72,6 +72,8 @@ class CrackCaptcha():
         :return:
         """
         button = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="button"]')))
+        # 点击按钮
+        button.click()
         return button
 
     # 获取验证码元素对象
@@ -168,4 +170,6 @@ class CrackCaptcha():
 
 if __name__ == '__main__':
     crack_captcha = CrackCaptcha()
+    crack_captcha.open()
+    crack_captcha.get_captcha_button()
     crack_captcha.get_captcha_image()
