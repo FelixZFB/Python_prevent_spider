@@ -98,13 +98,155 @@
     - 但这个前提是手机必须要 ROOT，而且需要计算证书 Hash Code 并对证书进行重命名，
     - 具体可以参考 https://crifan.github.io/app_capture_package_tool_charles/website/how_capture_app/complex_https/https_ssl_pinning，
     - 这种思路也是第一种信任证书的解决方案。
+    
+- 方案3：Xposed + JustTrustMe
+    - Xposed 是一款 Android 端的 Hook 工具，利用它我们可以 Hook App 里面的关键方法的执行逻辑，绕过 HTTPS 的证书校验过程。
+    - JustTrustMe 是基于 Xposed 一个插件，它可以将 HTTPS 证书校验的部分进行 Hook，改写其中的证书校验逻辑，
+    - 这种思路是属于第二种绕过 HTTPS 证书校验的解决方案。
+    - 当然基于 Xposed 的类似插件也有很多，如 SSLKiller、sslunpining 等等，可以自行搜索。
+    - 不过 Xposed 的安装必须要 ROOT，如果不想 ROOT 的话，可以使用后文介绍的 VirtualXposed。
+
+- 方案4：Frida
+    - Frida 也是一种类似 Xposed 的 Hook 软件，使用它我们也可以实现一些 HTTPS 证书校验逻辑的改写，
+    - 这种思路也是属于第二种绕过 HTTPS 证书校验的方案。
+    - 具体可以参考 https://codeshare.frida.re/@pcipolloni/universal-android-ssl-pinning-bypass-with-frida/。
+    
+- 方案5：VirtualXposed
+    - Xposed 的使用需要 ROOT，如果不想 ROOT 的话，可以直接使用一款基于 VirtualApp 开发的
+    - VirtualXposed 工具，它提供了一个虚拟环境，内置了 Xposed。
+    - 我们只需要将想要的软件安装到 VirtualXposed 里面就能使用 Xposed 的功能了，
+    - 然后配合 JustTrustMe 插件也能解决 SSL Pining 的问题，
+    - 这种思路是属于第二种绕过 HTTPS 证书校验的解决方案。
+    
+- 方案5：特殊改写
+    - 对于第二种绕过 HTTPS 证书校验的解决方案，其实本质上是对一些关键的校验方法进行了 Hook 和改写，
+    - 去除了一些校验逻辑。但是对于一些代码混淆后的 App 来说，其校验 HTTPS 证书的方法名直接变了，
+    - 那么 JustTrustMe 这样的插件就无法 Hook 这些方法，因此也就无效了。
+    - 所以这种 App 可以直接去逆向，找到其中的一些校验逻辑，
+    - 然后修改写 JustTrustMe 的源码就可以成功 Hook 住了，也就可以重新生效了。
+
+- 方案6：逆向秘钥
+    - 上面都是信任或者绕过证书验证，还有一种硬解的方法，逆向秘钥，
+    - 可以直接逆向 App，反编译得到证书秘钥，使用秘钥来解决证书限制。
+
+
+## 6.2 逆向   
+- 以上解决了一些抓包的问题，但是还有一个问题，就是抓的数据包里面带有加密参数怎么办？
+- 比如一个 HTTP 请求，其参数还带有 token、sign 等参数，即使我们抓到包了，那也没法直接模拟啊？
+- 所以我们可能需要对 App 进行一些逆向分析，找出这些加密过程究竟是怎样的。
+- 这时候我们就需要用到一些逆向工具了。下面是一些常用的逆向工具
+
+- JEB
+    - JEB 是一款适用于 Android 应用程序和本机机器代码的反汇编器和反编译器软件。
+    - 利用它我们可以直接将安卓的 apk 反编译得到 Smali 代码、jar 文件，获取到 Java 代码。
+    - 有了 Java 代码，我们就能分析其中的加密逻辑了。
+    - JEB：https://www.pnfsoftware.com/
+
+- JADX
+    - 与 JEB 类似，JADX 也是一款安卓反编译软件，可以将 apk 反编译得到 jar 文件，
+    - 得到 Java 代码，从而进一步分析逻辑。
+    - JADX：https://github.com/skylot/jadx
+
+- dex2jar、jd-gui
+    - 这两者通常会配合使用来进行反编译，同样也可以实现 apk 文件的反编译，
+    - 但其用起来个人感觉不如 JEB、JADX 方便。
+
+- 脱壳
+    - 一些 apk 可能进行了加固处理，所以在反编译之前需要进行脱壳处理。
+    - 一般来说可以先借助于一些查壳工具查壳，如果有壳的话可以借助于 Dumpdex、FRIDA-DEXDump 等工具进行脱壳。
+    - FRIDA-DEXDump：https://github.com/hluwa/FRIDA-DEXDump
+    - Dumpdex：https://github.com/WrBug/dumpDex
+
+- 反汇编
+    - 一些 apk 里面的加密可能直接写入 so 格式的动态链接库里面，要想破解其中的逻辑，
+    - 就需要用到反汇编的一些知识了，这里可以借助于 IDA 这个软件来进行分析。
+    - IDA：https://www.hex-rays.com/
+
+- 以上的一些逆向操作需要较深的功底和安全知识，在很多情况下，如果逆向成功了，
+- 一些加密算法还是能够被找出来的，找出来了加密逻辑之后，我们用程序模拟就方便了。
+
+
+## 6.3 模拟
+- 逆向对于多数有保护 App 是有一定作用的，但有的时候 App 还增加了风控检测，
+- 一旦 App 检测到运行环境或访问频率等信息出现异常，那么 App 或服务器就可能产生防护，
+- 直接停止执行或者服务器返回假数据等都是有可能的。
+- 对于这种情形，有时候我们就需要回归本源，真实模拟一些 App 的手工操作了。
+
+- adb
+    - 最常规的 adb 命令可以实现一些手机自动化操作，但功能有限。
+
+- 触动精灵、按键精灵
+    - 有很多商家提供了手机 App 的一些自动化脚本和驱动，如触动精灵、按键精灵等，
+    - 利用它们的一些服务我们可以自动化地完成一些 App 的操作。
+    - 触动精灵：https://www.touchsprite.com/
+
+- Appium
+    - 类似 Selenium，Appium 是手机上的一款移动端的自动化测试工具，也能做到可见即可爬的操作。
+    - Appium：http://appium.io/
+
+- AirTest
+    - 同样是一款移动端的自动化测试工具，是网易公司开发的，相比 Appium 来说使用更方便。
+    - AirTest：http://airtest.netease.com/
+
+- Appium/AirTest + mitmdump
+    - mitmdump 其实是一款抓包软件，与 mitmproxy 是一套工具。
+    - 这款软件配合自动化的一些操作就可以用 Python 实现实时抓包处理了。
+    - mitmdump：https://mitmproxy.readthedocs.io/
+    - 到此，App 的一些爬虫思路和常用的工具就介绍完了，在后面的课时我们会使用其中一些工具来进行实战演练。
+
+- ## 6.1 - ## 6.3 章节内容参考资料
+    - 参考来源
+    - https://zhuanlan.zhihu.com/webspider
+    - https://www.zhihu.com/question/60618756/answer/492263766
+    - https://www.jianshu.com/p/a818a0d0aa9f
+    - https://mp.weixin.qq.com/s/O6iWb2VL4SH9UNLwk2FCMw
+    - https://zhuanlan.zhihu.com/p/60392573
+    - https://crifan.github.io/app_capture_package_tool_charles/website/
+    - https://github.com/WooyunDota/DroidDrops/blob/master/2018/SSL.Pinning.Practice.md
+
+## 6.4 抓包利器 Charles 的使用
+- Charles 是一个网络抓包工具，我们可以用它来做 App 的抓包分析，得到 App 运行过程中发生的所有网络请求和响应内容，
+- 这就和 Web 端浏览器的开发者工具 Network 部分看到的结果一致。
+
+- Charles、Fiddler 等都是非常强大的 HTTP 抓包软件，功能基本类似，不过 Charles 的跨平台支持更好。
+- 所以我们选用 Charles 作为主要的移动端抓包工具，用于分析移动 App 的数据包，辅助完成 App 数据抓取工作。
+
+- 目标：
+    - 电影示例 App 为例，通过 Charles 抓取 App 运行过程中的网络数据包，
+    - 然后查看具体的 Request 和 Response 内容，以此来了解 Charles 的用法。
+    - 同时抓取到数据包之后，我们采用 Python 将请求进行改写，从而实现 App 数据的爬取
+    
+- 准备工作：
+    - 请确保已经正确安装 Charles 并开启了代理服务，另外准备一部 Android 手机，系统版本最好是在 7.0 以下。
+    - 如果系统版本在 7.0 及以上，可能出现 SSL Pining 的问题，可以参考第一课时的思路来解决。
+    - 然后手机连接 Wi-Fi，和 PC 处于同一个局域网下，另外将 Charles 代理和 Charles CA 证书设置好，同时需要开启 SSL 监听。
+    - 此过程的配置流程可以参见：https://cuiqingcai.com/5255.html。
+    - 最后手机上安装本节提供的 apk（apk 随课件一同领取），进行接下来的 Charles 抓包操作。
+    - scrape apk链接: https://pan.baidu.com/s/1gmsQ6k5aABdyxghfgLIOcw 提取码: 4bxn
+    
+    - 参考地址：
+    - Charles相关链接
+        - 官方网站：https://www.charlesproxy.com
+        - 下载链接：https://www.charlesproxy.com/download
+        - 安装参考网址：https://cuiqingcai.com/5255.html
+        - 安装查看03_Charles_安装及使用
+    
+    - 准备工作查看03_Charles_安装及使用，设置成功后就可以开始访问APP，然后开始抓包了
+    
+- Charles 原理
+    - 首先将 Charles 运行在自己的 PC 上，
+    - Charles 运行的时候会在 PC 的 8888 端口开启一个代理服务，
+    - 这个服务实际上是一个 HTTP/HTTPS 的代理。
+    - 确保手机和 PC 在同一个局域网内，我们可以使用手机模拟器通过虚拟网络连接，
+    - 也可以使用手机真机和 PC 通过无线网络连接。
+    - 设置手机代理为 Charles 的代理地址，这样手机访问互联网的数据包就会流经 Charles，
+    - Charles 再转发这些数据包到真实的服务器，服务器返回的数据包再由 Charles 转发回手机，
+    - Charles 就起到中间人的作用，所有流量包都可以捕捉到，
+    - 因此所有 HTTP 请求和响应都可以捕获到。同时 Charles 还有权力对请求和响应进行修改。
+        
 
 
 
 
 
 
-## 6.2 APK反编译
-
-
-## 6.3 代码混淆
