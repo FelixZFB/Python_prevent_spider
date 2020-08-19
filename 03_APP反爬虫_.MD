@@ -246,12 +246,56 @@
         
 ## 6.5 抓包利器 Charles 的使用实例
 - 6.4 节已经已经了准备工作，本节使用 Charles 爬取 App 的数据
-- 电脑打开 Charles 软件，开启监听，然后手机打开 scrape APP，然后向下滚动 app 
-- app加载了第一页和第二页，Charles 上面已经抓取到两页的内容
-- 右侧工具栏：概述显示一些爬取信息，内容里面显示爬取到的具体数据
-- 查看
+- 关键是找到app数据的api接口，即请求数据的url地址及其规律
 
+- 抓包
+    - 电脑打开 Charles 软件，开启监听，然后手机打开 scrape APP，然后向下滚动 app 
+    - app加载了第一页和第二页，Charles 上面已经抓取到两页的内容
+    - 右侧工具栏：概述显示一些爬取信息，内容里面显示爬取到的具体数据
+    - 查看![图片](03_App反爬虫/Scrape-APP爬取/001_Charles爬取scrapeAPP数据.png)
+    - 右侧工具栏底部，可以切换查看不同响应结果不同的数据格式
 
+- 分析
+    - 内容 (Contents) 选项卡，查看该请求和响应的详情信息。
+    - 上半部分显示的是 请求 Request 的信息，下半部分显示的是 响应 Response 的信息。
+    - 比如针对 Request，我们切换到 Headers 选项卡即可看到该 Request 的 Headers 信息，
+    - 针对 Response，我们切换到 JSON Text 选项卡即可看到该 Response 的 Body 信息，并且该内容已经被格式化
+    - 由于这个请求是 GET 请求，所以我们还需要关心的就是 GET 的参数信息，切换到 Query String （查询字符串）选项卡即可查看
+    - 通过抓包已经获取到 App 中的电影数据接口的请求（地址）和 响应内容，并且可以查看 Response 返回的 JSON 数据。
+    - 至于其他 App，我们同样可以使用这样的方式来分析
+    - 查看![图片](03_App反爬虫/Scrape-APP爬取/002_Charles爬取scrapeAPP数据.png)
 
+- 重发
+    - Charles 还有一个强大功能，它可以将捕获到的请求加以修改并发送修改后的请求。
+    - 点击上方的修改按钮（一支笔一样的图标），左侧列表就多了一个以编辑图标为开头的链接，
+    - 这就代表此链接对应的请求正在被我们修改，右侧工具栏里面进行修改
+    - 将参数中的某个字段修改下，比如这里将 offset 字段由 0 修改为 10。
+    - 这时我们已经对原来请求携带的 Query 参数做了修改，然后点击下方的 Execute 按钮即可执行修改后的请求
+    - 左侧列表再次出现了接口的请求结果，内容变成了第 11~20 条内容
+    - 有了重发这个功能，我们就可以方便地使用 Charles 来做调试，
+    - 可以通过修改参数、接口等来测试不同请求的响应状态，
+    - 就可以知道哪些参数是必要的哪些是不必要的，以及参数分别有什么规律，
+    - 最后得到一个最简单的接口和参数形式以供程序模拟调用使用。
+    - 查看![图片](03_App反爬虫/Scrape-APP爬取/003_Charles爬取scrapeAPP数据_重发.png)
+    
+- 模拟
+    - 现在我们已经成功完成了抓包操作了，所有的请求一目了然，
+    - 请求的 URL 就是 https://dynamic1.scrape.cuiqingcai.com/api/movie/，
+    - 后面跟了两个 GET 请求参数。经过观察，可以很轻松地发现 offset 就是偏移量，limit 就是一次请求要返回的结果数量。
+    - 比如 offset 为 20，limit 为 10，就代表获取第 21~30 条数据。
+    - 另外我们通过观察发现一共就是 100 条数据，offset 从 0 到 90 遍历即可。
+    
+- python 模拟实现
+
+```python
+import requests
+
+BASE_URL = 'https://dynamic1.scrape.cuiqingcai.com/api/movie?offset={offset}&limit=10'
+for i in range(0, 10):
+    offset = i * 10
+    url = BASE_URL.format(offset=offset)
+    data = requests.get(url).json()
+    print('data', data)
+```
 
 
