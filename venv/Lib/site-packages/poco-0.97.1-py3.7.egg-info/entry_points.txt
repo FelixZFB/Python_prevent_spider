@@ -1,0 +1,3 @@
+[console_scripts]
+poco = poco.poco:main
+

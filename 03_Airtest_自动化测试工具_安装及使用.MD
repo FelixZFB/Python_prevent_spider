@@ -102,6 +102,9 @@ FA7311702282    device
     - 查看内存信息命令：adb shell cat /proc/meminfo
 
 # 4 AirtestIDE 连接安卓设备
+- 先手机数据线连接电脑，打开开发者选项中的USB调试模式，连接方式选择传输文件
+- 然后CMD切换到 adb.exe 所在的文件夹，然后启动 adb 服务: adb start-server
+- 然后查看设备是否连接成功，命令：adb devices
 - 打开AirtestIDE，登陆，我直接用的Github账号登陆，需要邮箱进行验证
 - 打开后，在AirtestIDE设备面板中点击refresh ADB 刷新按钮，查看连接上的设备，一般经过第3步，打开就已经显示连接设备了
 - 如果没有显示出设备，试试重启restart ADB，

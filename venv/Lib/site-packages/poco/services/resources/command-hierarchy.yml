@@ -1,0 +1,53 @@
+{
+  config: {
+    before: true,
+    docker: ["config"],
+    kubernetes: ["describe"],
+    helm: [["install", "--debug", "--dry-run", "--name"]]
+  },
+  build: {
+    before: true,
+    docker: ["build"]
+  },
+  start: {
+    before: true,
+    docker: ["build", ["pull", "--ignore-pull-failures"] , "config", ["up", "-d"], "ps"],
+    kubernetes: ["apply", ["get", "all", "--all-namespaces"]],
+    helm: [["install", "--name"]],
+    after: true
+  },
+  restart: {
+    before: true,
+    docker: ["stop", "ps", "build", ["pull", "--ignore-pull-failures"], "config", ["up", "-d"], "ps"],
+    kubernetes: ["apply", ["get", "all", "--all-namespaces"]],
+    helm: ["upgrade"],
+    after: true
+  },
+  ps: {
+    before: true,
+    docker: ["ps"],
+    kubernetes: ["get"],
+    helm: [["ls", "--all"], "status"],
+    after: true
+  },
+  pull: {
+    before: true,
+    docker: ["pull"],
+    after: true
+  },
+  stop: {
+    docker: ["stop", "ps"],
+    kubernetes: ["delete"],
+    helm: [["del", "--purge"]],
+    after: true
+  },
+  logs: {
+    docker: ["logs"],
+    kubernetes: ["get"],
+    helm: ["history"]
+  },
+  pack: {
+    docker: ["pull"],
+    postmethods: ["pack"]
+  }
+}
