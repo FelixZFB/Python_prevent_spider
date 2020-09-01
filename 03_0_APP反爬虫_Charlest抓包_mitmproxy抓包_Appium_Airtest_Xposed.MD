@@ -458,7 +458,8 @@ def response(flow):
 
     - 对于爬虫来说，我们用 Selenium 来抓取 JavaScript 渲染的页面，可见即可爬。
     - Appium 同样也可以，对于一些不能找出api接口的动态渲染app, 用 Appium 来做 App 爬虫不失为一个好的选择。
-    
+
+- 推荐使用下面的 airtest 更加方便好用   
     
 ## 6.7 airtest 更好用的自动化工具 
 - 为什么选择 airtest ?
@@ -636,3 +637,30 @@ poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=Fa
     - python 脚本可以复制到 airtestIDE 运行，也可以直接在pycharm中运行
     - 脚本中需要添加链接设备的代码
     - 具体查看：https://www.cnblogs.com/AirtestProject/p/13036250.html
+    
+ 
+ ## 6.8 Xposed 的使用
+ -  JavaScript 逆向体会了 Hook 的功效，对于 App 来说，Hook 技术应用非常广泛。
+    - Hook 技术查看 Spider_scrapy_intensive_study 项目中 003 笔记
+    - 比如朋友圈微信步数的修改，其实就是通过 Hook 数据发送的方式实现步数的修改。
+    - 比如处理安卓的 SSL Pining，用 Hook 技术也可以修改 SSL 证书校验结果，实现校验的绕过。
+    - 对于 App 爬虫来说，我们也可以使用 Hook 一些关键的方法获取方法执行前后的结果，从而实现数据的截获。
+    - 那这些技术怎么来实现呢？这里就不得不提一个框架，叫作 Xposed。
+    
+### 6.8.1 Xposed 介绍
+- Xposed 框架
+    - Xposed 框架（Xposed Framework）是一套开源的，在 Android 高权限模式下运行的框架服务，
+    - 可以在不修改 App 源码的情况下影响程序运行（修改系统）的框架服务，
+    - 基于它可以制作出许多功能强大的模块，且在功能不冲突的情况下同时运作。
+- Xposed 框架的原理
+    - Xposed 框架的原理是通过替换系统级别的 /system/bin/app_process 程序控制 zygote 进程，
+    - 使得app_process 在启动过程中会加载 XposedBridge.jar 这个 jar 包，
+    - 这个 jar 包里面定义了对系统方法、属性的一系列 Hook 操作，
+    - 同时还提供了几个 Hook API 供我们编写 Xposed 模块来使用。
+    - 我们编写一个 Xposed 模块时，引用 Xposed 提供的几个 Hook 方法就可以实现对系统级别任意方法和属性的修改了。
+    - 这么说可能有点抽象，下面我们来编写一个 Xposed 模块带你体会一下 Xposed 的用法，
+    - 最后再使用 Xposed 来实现一个真实 App 执行逻辑的修改。
+- 具体查看：https://kaiwu.lagou.com/course/courseInfo.htm?courseId=46#/detail/pc?id=1695
+
+
+## 6.9 App 逆向的常见技巧

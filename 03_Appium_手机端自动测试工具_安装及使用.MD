@@ -15,4 +15,4 @@
     - 或 pip install appium-python-client
     - 或 pycharm 里面搜索 appium-python-client 安装
 
-# 1 
+- 推荐使用 airtest 自动化工具，更加方便好用   
