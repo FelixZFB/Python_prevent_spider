@@ -663,4 +663,3 @@ poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=Fa
 - 具体查看：https://kaiwu.lagou.com/course/courseInfo.htm?courseId=46#/detail/pc?id=1695
 
 
-## 6.9 App 逆向的常见技巧
