@@ -13,7 +13,7 @@ fonttools==4.4.3
 idna==2.9
 itsdangerous==1.1.0
 Jinja2==2.11.2
-lxml==4.5.0
+lxml==4.6.2
 MarkupSafe==1.1.1
 multidict==4.7.6
 parsel==1.5.2
